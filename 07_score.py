@@ -77,7 +77,7 @@ class MyGame(arcade.Window):
         self.coin_list = arcade.SpriteList()
 
         # Set up the player, specifically placing it at these coordinates.
-        image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
+        image_source = "Sprites/MainCharacter/MainCharacter.png"
         self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 96
@@ -85,27 +85,27 @@ class MyGame(arcade.Window):
 
         # Create the ground
         # This shows using a loop to place multiple sprites horizontally
-        for x in range(0, 1250, 64):
-            wall = arcade.Sprite(":resources:images/tiles/grassMid.png", TILE_SCALING)
+        for x in range(0, 1250, 32):
+            wall = arcade.Sprite("Sprites/Bricks/Bricks.png", TILE_SCALING)
             wall.center_x = x
             wall.center_y = 32
             self.wall_list.append(wall)
 
         # Put some crates on the ground
         # This shows using a coordinate list to place sprites
-        coordinate_list = [[256, 96],
-                           [512, 96],
-                           [768, 96]]
+        # coordinate_list = [[256, 96],
+        #                    [512, 96],
+        #                    [768, 96]]
 
-        for coordinate in coordinate_list:
-            # Add a crate on the ground
-            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", TILE_SCALING)
-            wall.position = coordinate
-            self.wall_list.append(wall)
+        # for coordinate in coordinate_list:
+        #     # Add a crate on the ground
+        #     wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", TILE_SCALING)
+        #     wall.position = coordinate
+        #     self.wall_list.append(wall)
 
         # Use a loop to place some coins for our character to pick up
         for x in range(128, 1250, 256):
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", COIN_SCALING)
+            coin = arcade.Sprite("Sprites/tp2.png", COIN_SCALING)
             coin.center_x = x
             coin.center_y = 96
             self.coin_list.append(coin)

@@ -26,6 +26,58 @@ BOTTOM_VIEWPORT_MARGIN = 50
 TOP_VIEWPORT_MARGIN = 100
 
 
+# These are health variables
+
+BULLET_SPEED = 5
+
+HEALTHBAR_WIDTH = 25
+HEALTHBAR_HEIGHT = 3
+HEALTHBAR_OFFSET_Y = 68
+
+HEALTH_NUMBER_OFFSET_X = -20
+HEALTH_NUMBER_OFFSET_Y = 68
+
+class SpriteWithHealth(arcade.Sprite):
+    """ Sprite with hit points """
+
+    def __init__(self, image, scale, max_health):
+        super().__init__(image, scale)
+
+        # Add extra attributes for health
+        self.max_health = max_health
+        self.cur_health = max_health
+
+    def draw_health_number(self):
+        """ Draw how many hit points we have """
+
+        health_string = f"{self.cur_health}/{self.max_health}"
+        arcade.draw_text(health_string,
+                         start_x=self.center_x + HEALTH_NUMBER_OFFSET_X,
+                         start_y=self.center_y + HEALTH_NUMBER_OFFSET_Y,
+                         font_size=12,
+                         color=arcade.color.WHITE)
+
+    def draw_health_bar(self):
+        """ Draw the health bar """
+
+        # Draw the 'unhealthy' background
+        if self.cur_health < self.max_health:
+            arcade.draw_rectangle_filled(center_x=self.center_x,
+                                         center_y=self.center_y + HEALTHBAR_OFFSET_Y,
+                                         width=HEALTHBAR_WIDTH,
+                                         height=3,
+                                         color=arcade.color.RED)
+
+        # Calculate width based on health
+        health_width = HEALTHBAR_WIDTH * (self.cur_health / self.max_health)
+
+        arcade.draw_rectangle_filled(center_x=self.center_x - 0.5 * (HEALTHBAR_WIDTH - health_width),
+                                     center_y=self.center_y + 64,
+                                     width=health_width,
+                                     height=HEALTHBAR_HEIGHT,
+                                     color=arcade.color.GREEN)
+
+
 class MyGame(arcade.Window):
     """
     Main application class.
@@ -81,10 +133,17 @@ class MyGame(arcade.Window):
 
         # Set up the player, specifically placing it at these coordinates.
         image_source = "Sprites/MainCharacter/MainCharacter.png"
-        self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
+        self.player_sprite = SpriteWithHealth(image_source, CHARACTER_SCALING, 10)
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 96
         self.player_list.append(self.player_sprite)
+
+        # Set up the enemy to face the character
+        # image_source = "Sprites/Enemy1.png"
+        # self.player_sprite = SpriteWithHealth(image_source, CHARACTER_SCALING, 10)
+        # self.player_sprite.center_x = 128
+        # self.player_sprite.center_y = 96
+        # self.player_list.append(self.player_sprite)
 
         # Create the ground
         # This shows using a loop to place multiple sprites horizontally
@@ -127,11 +186,17 @@ class MyGame(arcade.Window):
         arcade.draw_lrwh_rectangle_textured(0, 0,
                             SCREEN_WIDTH, SCREEN_HEIGHT,
                             self.background)
+        arcade.draw_lrwh_rectangle_textured(SCREEN_WIDTH, 0,
+                            SCREEN_WIDTH, SCREEN_HEIGHT,
+                            self.background)
 
         # Draw our sprites
         self.wall_list.draw()
         self.coin_list.draw()
         self.player_list.draw()
+        for player in self.player_list:
+            player.draw_health_number()
+            player.draw_health_bar()
 
         # Draw our score on the screen, scrolling it with the viewport
         score_text = f"Score: {self.score}"
